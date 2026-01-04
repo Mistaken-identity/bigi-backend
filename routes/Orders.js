@@ -1,17 +1,16 @@
 import express from 'express';
 import Order from '../models/Order.js';
 
-const router = require('express').Router();
-const Order = require('../models/Order');
+const router = express.Router();
 
 router.post('/', async (req, res) => {
-    const order = await Order.create(req.body);
-    res.json(order);
-});
+     try { 
+        const order = new Order(req.body); 
+        await order.save(); 
+        res.status(201).json(order); 
+    }   catch (error) { 
+        res.status(500).json({ message: error.message }); 
+    } 
+}); 
 
-router.get('/', async (req, res) => {
-    const orders = await Order.find();
-    res.json(orders);
-});
-
-module.exports = router;
+export default router;
