@@ -3,6 +3,11 @@ import Order from '../models/Order.js';
 
 const router = express.Router();
 
+router.get('/', (req, res) => {
+    res.json({ message: 'Orders route is working' });
+
+});
+
 router.post('/', async (req, res) => {
      try { 
         const order = new Order(req.body); 
