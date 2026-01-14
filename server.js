@@ -15,17 +15,34 @@ console.log("ENV CHECK:", {
 const app = express();
 
 // Middleware
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "https://bigi-frontend.vercel.app",
+  "https://bigi.africa",
+  "https://www.bigi.africa"
+];
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "http://localhost:5173",
-      "https://bigi-frontend.vercel.app",
-    ],
-    methods: ["GET", "POST"],
-    credentials: true,
+    origin: function (origin, callback) {
+      // allow non-browser tools (Postman, curl)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("CORS not allowed"));
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true
   })
 );
+
+// Handle preflight requests
+app.options("*", cors());
 
 app.use(express.json());
 
